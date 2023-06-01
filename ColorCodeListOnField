@@ -1,0 +1,10 @@
+var category = $datapoint.category
+var reviewed = $datapoint.ready_for_approval
+var cat_color = When(reviewed == 'no','#993333',reviewed == 'yes','#2977a6',category == '7. Waiting on Board','#CB8A07','')
+
+return {textColor: '',
+  backgroundColor: cat_color,
+  separatorColor:'#1a1a1a',
+  selectionColor: '#8a8a8a',
+  selectionTextColor: '',attributes: ''
+}
