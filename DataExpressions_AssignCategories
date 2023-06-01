@@ -1,0 +1,41 @@
+var p = Portal('https://www.arcgis.com');
+var fs = FeatureSetByPortalItem(p,'9cfe5d169a4e4b34a79c8640b7a924ee',0,['county','objectid','case_number','description','EditDate','Editor','globalid','search_date','category','ready_for_approval'], false);
+
+var recalc = {
+  'fields': [{'name':'memberName', 'type':'esriFieldTypeString'},
+  {'name':'objectid','type':'esriFieldTypeOID'},
+  {'name':'globalid','type':'esriFieldTypeGlobalID'},
+  {'name':'description','type':'esriFieldTypeString'},
+  {'name':'case_number','type':'esriFieldTypeString'},
+  {'name':'county','type':'esriFieldTypeString'},
+  {'name':'category','type':'esriFieldTypeString'},
+  {'name':'ready_for_approval','type':'esriFieldTypeString'}
+ // {'name':'search_date','type':'esriFieldTypeDate'}
+  ],
+  'geometryType': '',
+  'features': []
+}
+for(var f in fs) {  
+  var c = Proper(f["county"])
+  var member = When(
+    Includes(["Carbon","Beaver","Box Elder","Juab"],c),"Jim Porter",
+    Includes(["Grand","Davis","Kane","San Juan","Uintah"],c), "Kris Hamlet",
+    Includes(["Utah","Duchesne","Millard","Sanpete","Washington"],c),"Anna Rae Garrett",
+    Includes(["Wasatch","Emery","Morgan","Sevier","Wayne"],c),"Tracy Glover",
+    Includes(["Salt Lake","Garfield","Piute","Summit","Weber"],c),"Chad Jensen",
+    Includes(["Cache","Iron","Rich","Tooele","Daggett"],c),"Alan Bergstrom",
+    "Not Assigned To Any Member"
+  )
+  var new_f = {'attributes': {'memberName':member,
+  'objectid':f.OBJECTID,
+  'globalid':f.GLOBALID,
+  'description':f.DESCRIPTION,
+  'case_number':f.CASE_NUMBER,
+  'county':f.COUNTY,
+  //'search_date':f.SEARCH_DATE
+  'category':f.CATEGORY,
+  'ready_for_approval':f.READY_FOR_APPROVAL
+  }}
+  Push(recalc.features, new_f)
+}
+return FeatureSet(Text(recalc))
